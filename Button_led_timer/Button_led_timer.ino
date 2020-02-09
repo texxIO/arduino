@@ -14,8 +14,10 @@ int event1State = 0;
 unsigned long startMillis;
 unsigned long currentMillis;
 unsigned long timeDiff;
-const unsigned long ledTimer = 10000; //10 secunde
-const unsigned long eventStartDelay = 5000; // porneste la 5 sec dupa ce a fost apasat butonul
+const unsigned long ledTimer = 5000; //10 secunde
+const unsigned long event1Timer = 5000; //10 secunde
+const unsigned long eventStartDelay = 5000; // porneste la 5 sec dupa ce a fost apasat butonul , pe asta il folosim daca e nevoie
+
 
 void setup() {
   Serial.begin(9600);
@@ -35,20 +37,26 @@ void loop() {
 
   if (timeDiff >= ledTimer && ledState == 1)
   {
-    stopAll();
+    stopLed();
+    startEvent1();
+  }
+
+  if (timeDiff >= (event1Timer + ledTimer) && event1State == 1)
+  {
+    stopEvent1();
   }
 
   if (buttonStateOld == 0 && buttonStateNew == 1) {
     startMillis = currentMillis;
 
-    if (ledState == 0) {
+    if (ledState == 0 && event1State == 0) {
       startLed();
-    } else {
+    } else  {
       stopAll();
     }
+
   }
 
-  triggerEvents();
   buttonStateOld = buttonStateNew;
   delay(buttonSafeDelay);
 }
